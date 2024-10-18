@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Selection</title>
+    <link rel="stylesheet" href="selectionstyle.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .teacher-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            background-color: #e7e7e7;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            left: 0;
+            top: 100%;
+            margin-top: 5px;
+        }
+
+        .teacher-item:hover .tooltip {
+            display: block;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.5; /* Initially disabled */
+            pointer-events: none; /* Prevent clicks */
+        }
+
+        button.enabled {
+            opacity: 1; /* Enabled */
+            pointer-events: auto; /* Allow clicks */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .selected-teachers {
+            margin-top: 20px;
+        }
+
+        .selected-teachers p {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Course Selection</h1>
+    </header>
+    <section>
+        <h2>Select Theory Courses</h2>
+        <select id="theory-courses" onchange="populateTheoryTeachers()">
+            <option value="">-- Select a Theory Course --</option>
+            <option value="CS101">Computer Science 101</option>
+            <option value="MATH101">Mathematics 101</option>
+            <option value="PHY101">Physics 101</option>
+            <option value="CHEM101">Chemistry 101</option>
+            <option value="BIO101">Biology 101</option>
+            <option value="ENG101">English 101</option>
+            <option value="HIST101">History 101</option>
+        </select>
+        <div id="theory-teacher-list"></div>
+        <p id="theory-remaining"></p>
+
+        <h2>Select Lab Courses</h2>
+        <select id="lab-courses" onchange="populateLabTeachers()">
+            <option value="">-- Select a Lab Course --</option>
+            <option value="CSLAB">Computer Science Lab</option>
+            <option value="MATHLAB">Mathematics Lab</option>
+            <option value="PHYLAB">Physics Lab</option>
+            <option value="CHEMLAB">Chemistry Lab</option>
+            <option value="BIOLAB">Biology Lab</option>
+        </select>
+        <div id="lab-teacher-list"></div>
+        <p id="lab-remaining"></p>
+
+        <div class="selected-teachers" id="selected-teachers">
+            <p>Selected Teachers:</p>
+        </div>
+
+        <button id="submit-btn" onclick="submitSelection()">Submit Selection</button>
+    </section>
+
+    <script>
+        let selectedTheoryCourses = [];
+        let selectedLabCourses = [];
+        const totalTheoryCourses = 4;
+        const totalLabCourses = 2;
+        const selectedTeachers = {};
+
+        function populateTheoryTeachers() {
+            const teachers = {
+                'CS101': [
+                    { name: "Alice Smith", rating: "4.5", details: "PhD in Computer Science, 5 years experience." },
+                    { name: "Bob Johnson", rating: "4.2", details: "Masters in Software Engineering, 3 years experience." },
+                    { name: "David King", rating: "4.7", details: "PhD in AI, 6 years experience." }
+                ],
+                'MATH101': [
+                    { name: "Charlie Brown", rating: "4.0", details: "PhD in Mathematics, 4 years experience." },
+                    { name: "Daisy White", rating: "4.3", details: "Masters in Applied Mathematics, 2 years experience." },
+                    { name: "Edgar Black", rating: "4.1", details: "PhD in Algebra, 3 years experience." }
+                ],
+                'PHY101': [
+                    { name: "Eva Green", rating: "4.6", details: "PhD in Physics, 6 years experience." },
+                    { name: "Frank Blue", rating: "4.4", details: "Masters in Physics, 3 years experience." },
+                    { name: "George Gold", rating: "4.7", details: "PhD in Quantum Mechanics, 5 years experience." }
+                ],
+                'CHEM101': [
+                    { name: "Holly Adams", rating: "4.3", details: "PhD in Chemistry, 5 years experience." },
+                    { name: "Ivy Brooks", rating: "4.5", details: "Masters in Organic Chemistry, 4 years experience." },
+                    { name: "Jack Brown", rating: "4.2", details: "PhD in Physical Chemistry, 3 years experience." }
+                ],
+                'BIO101': [
+                    { name: "Karen White", rating: "4.4", details: "PhD in Biology, 6 years experience." },
+                    { name: "Leo Black", rating: "4.6", details: "Masters in Molecular Biology, 5 years experience." },
+                    { name: "Mona Green", rating: "4.5", details: "PhD in Microbiology, 7 years experience." }
+                ],
+                'ENG101': [
+                    { name: "Nancy Red", rating: "4.1", details: "PhD in English Literature, 4 years experience." },
+                    { name: "Oscar Blue", rating: "4.0", details: "Masters in English Language, 3 years experience." },
+                    { name: "Paul Green", rating: "4.3", details: "PhD in Comparative Literature, 5 years experience." }
+                ],
+                'HIST101': [
+                    { name: "Rachel Brown", rating: "4.5", details: "PhD in History, 7 years experience." },
+                    { name: "Steve Gold", rating: "4.6", details: "Masters in World History, 4 years experience." },
+                    { name: "Tina White", rating: "4.4", details: "PhD in Modern History, 6 years experience." }
+                ]
+            };
+
+            const selectedCourse = document.getElementById('theory-courses').value;
+            const teacherListDiv = document.getElementById('theory-teacher-list');
+            teacherListDiv.innerHTML = ''; // Clear previous teachers
+
+            if (teachers[selectedCourse]) {
+                teachers[selectedCourse].forEach(teacher => {
+                    const teacherItem = document.createElement('div');
+                    teacherItem.className = 'teacher-item';
+                    teacherItem.innerText = teacher.name;
+
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.innerText = `Rating: ${teacher.rating}\n${teacher.details}`;
+                    teacherItem.appendChild(tooltip);
+
+                    teacherItem.onclick = () => selectTeacher(selectedCourse, teacher.name);
+
+                    teacherListDiv.appendChild(teacherItem);
+                });
+
+                if (!selectedTheoryCourses.includes(selectedCourse)) {
+                    selectedTheoryCourses.push(selectedCourse);
+                }
+            }
+
+            updateRemainingSubjects();
+            checkSubmitEligibility();
+        }
+
+        function populateLabTeachers() {
+            const teachers = {
+                'CSLAB': [
+                    { name: "Eve Adams", rating: "4.8", details: "Masters in Computer Science, 3 years experience." },
+                    { name: "Frank Wright", rating: "4.5", details: "PhD in Software Engineering, 6 years experience." },
+                    { name: "Grace Hall", rating: "4.6", details: "PhD in AI, 7 years experience." }
+                ],
+                'MATHLAB': [
+                    { name: "Helen Parker", rating: "4.4", details: "Masters in Mathematics, 5 years experience." },
+                    { name: "Ian Green", rating: "4.6", details: "PhD in Applied Mathematics, 4 years experience." },
+                    { name: "Jack White", rating: "4.7", details: "PhD in Statistics, 6 years experience." }
+                ],
+                'PHYLAB': [
+                    { name: "Liam Scott", rating: "4.2", details: "Masters in Physics, 3 years experience." },
+                    { name: "Mia Taylor", rating: "4.1", details: "PhD in Quantum Physics, 5 years experience." },
+                    { name: "Noah Miller", rating: "4.5", details: "Masters in Theoretical Physics, 6 years experience." }
+                ],
+                'CHEMLAB': [
+                    { name: "Olivia Johnson", rating: "4.4", details: "PhD in Chemistry, 5 years experience." },
+                    { name: "Paul Smith", rating: "4.3", details: "Masters in Organic Chemistry, 4 years experience." },
+                    { name: "Quinn Davis", rating: "4.5", details: "PhD in Biochemistry, 7 years experience." }
+                ],
+                'BIOLAB': [
+                    { name: "Rachel White", rating: "4.6", details: "Masters in Biology, 5 years experience." },
+                    { name: "Sam Thompson", rating: "4.4", details: "PhD in Molecular Biology, 6 years experience." },
+                    { name: "Tina Lewis", rating: "4.5", details: "Masters in Ecology, 4 years experience." }
+                ]
+            };
+
+            const selectedCourse = document.getElementById('lab-courses').value;
+            const teacherListDiv = document.getElementById('lab-teacher-list');
+            teacherListDiv.innerHTML = ''; // Clear previous teachers
+
+            if (teachers[selectedCourse]) {
+                teachers[selectedCourse].forEach(teacher => {
+                    const teacherItem = document.createElement('div');
+                    teacherItem.className = 'teacher-item';
+                    teacherItem.innerText = teacher.name;
+
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.innerText = `Rating: ${teacher.rating}\n${teacher.details}`;
+                    teacherItem.appendChild(tooltip);
+
+                    teacherItem.onclick = () => selectTeacher(selectedCourse, teacher.name);
+
+                    teacherListDiv.appendChild(teacherItem);
+                });
+
+                if (!selectedLabCourses.includes(selectedCourse)) {
+                    selectedLabCourses.push(selectedCourse);
+                }
+            }
+
+            updateRemainingSubjects();
+            checkSubmitEligibility();
+        }
+
+        function selectTeacher(course, teacherName) {
+            if (!selectedTeachers[course]) {
+                selectedTeachers[course] = [];
+            }
+            selectedTeachers[course].push(teacherName);
+
+            updateRemainingSubjects();
+            checkSubmitEligibility();
+            displaySelectedTeachers();
+        }
+
+        function displaySelectedTeachers() {
+            const selectedDiv = document.getElementById('selected-teachers');
+            selectedDiv.innerHTML = '<p>Selected Teachers:</p>';
+
+            for (const course in selectedTeachers) {
+                selectedTeachers[course].forEach(teacher => {
+                    selectedDiv.innerHTML += `<p>${course}: ${teacher}</p>`;
+                });
+            }
+        }
+
+        function updateRemainingSubjects() {
+            const remainingTheory = totalTheoryCourses - Object.keys(selectedTeachers).filter(course => selectedTheoryCourses.includes(course)).length;
+            const remainingLab = totalLabCourses - Object.keys(selectedTeachers).filter(course => selectedLabCourses.includes(course)).length;
+
+            document.getElementById('theory-remaining').innerText = `Remaining Theory Courses: ${remainingTheory}`;
+            document.getElementById('lab-remaining').innerText = `Remaining Lab Courses: ${remainingLab}`;
+            document.getElementById('submit-btn').classList.toggle('enabled', remainingTheory === 0 && remainingLab === 0);
+        }
+
+        function checkSubmitEligibility() {
+            const remainingTheory = totalTheoryCourses - Object.keys(selectedTeachers).filter(course => selectedTheoryCourses.includes(course)).length;
+            const remainingLab = totalLabCourses - Object.keys(selectedTeachers).filter(course => selectedLabCourses.includes(course)).length;
+
+            if (remainingTheory <= 0 && remainingLab <= 0) {
+                document.getElementById('submit-btn').classList.add('enabled');
+            } else {
+                document.getElementById('submit-btn').classList.remove('enabled');
+            }
+        }
+
+        function submitSelection() {
+            if (document.getElementById('submit-btn').classList.contains('enabled')) {
+                alert("Selection submitted successfully!");
+            } else {
+                alert("Please complete your selection before submitting.");
+            }
+        }
+    </script>
+</body>
+</html>

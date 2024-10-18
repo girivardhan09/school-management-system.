@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Profiles</title>
+    <link rel="stylesheet" href="teacherstyle.css">
+</head>
+<body>
+    <header>
+        <h1>Teacher Profiles</h1>
+    </header>
+
+    <!-- Course selection dropdown -->
+    <section>
+        <label for="theory-courses">Select a Course:</label>
+        <select id="theory-courses">
+            <option value="">-- Select a course --</option>
+        </select>
+    </section>
+
+    <!-- Section to display list of teachers for the selected course -->
+    <section id="teacher-list">
+        <!-- Teacher list will be dynamically generated here -->
+        <button class="teacher-btn">Dr. John Smith</button>
+        <button class="teacher-btn">Prof. Jane Doe</button>
+    </section>
+
+    <!-- Section to display selected teacher's profile -->
+    <section id="teacher-profile-section" style="display:none;">
+        <h2>Teacher Profile</h2>
+        <div id="teacher-profile">
+            <!-- Teacher profile details will be displayed here -->
+            <p>Name: Dr. John Smith</p>
+            <p>Research Areas: Artificial Intelligence, Machine Learning</p>
+            <p>Ratings: 4.5/5</p>
+        </div>
+    </section>
+
+    <script src="teacher-profile.js"></script>
+</body>
+</html>

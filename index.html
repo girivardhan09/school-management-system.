@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="log.css">
+    <style>
+        /* Style for red border when validation fails */
+        .error {
+            border: 2px solid red;
+        }
+
+        /* Style for the error message */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Student Login</h1>
+    </header>
+
+    <section>
+        <form id="login-form" onsubmit="return validateLogin()">
+            <label for="student-id">Student ID:</label>
+            <input type="text" id="student-id" name="student-id" placeholder="Enter your Student ID" required>
+            <div id="student-id-error" class="error-message"></div> <!-- Error message for Student ID -->
+
+            <label for="student-name">Student Name:</label>
+            <input type="text" id="student-name" name="student-name" placeholder="Enter your name" required>
+            <div id="student-name-error" class="error-message"></div> <!-- Error message for Student Name -->
+
+            <label for="branch">Branch:</label>
+            <select id="branch" name="branch" required>
+                <option value="">-- Select your Branch --</option>
+                <option value="CSE">Computer Science Engineering (CSE)</option>
+                <option value="ECE">Electronics and Communication Engineering (ECE)</option>
+                <option value="EEE">Electrical and Electronics Engineering (EEE)</option>
+                <option value="MECH">Mechanical Engineering (MECH)</option>
+                <option value="CIVIL">Civil Engineering (CIVIL)</option>
+                <option value="IT">Information Technology (IT)</option>
+            </select>
+            <div id="branch-error" class="error-message"></div> <!-- Error message for Branch -->
+
+            <label for="semester">Semester:</label>
+            <select id="semester" name="semester" required>
+                <option value="">-- Select your Semester --</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+            </select>
+            <div id="semester-error" class="error-message"></div> <!-- Error message for Semester -->
+
+            <button type="submit">Login</button>
+        </form>
+    </section>
+
+    <script>
+        function validateLogin() {
+            // Get form values
+            const studentId = document.getElementById('student-id');
+            const studentName = document.getElementById('student-name');
+            const branch = document.getElementById('branch');
+            const semester = document.getElementById('semester');
+
+            // Student ID pattern: First two digits (15-25), followed by 091A and then four digits
+            const studentIdPattern = /^(1[5-9]|2[0-5])091A\d{4}$/;
+
+            // Reset any previous error styles
+            clearErrors([studentId, studentName, branch, semester]);
+
+            let isValid = true;
+
+            // Validate Student ID format
+            if (!studentIdPattern.test(studentId.value)) {
+                showError(studentId, "Invalid Student ID!", "student-id-error");
+                studentId.focus(); // Set focus back to the student ID input
+                isValid = false;
+            }
+
+            // Validate Student Name
+            if (studentName.value.trim() === "") {
+                showError(studentName, "Please enter your name.", "student-name-error");
+                isValid = false;
+            }
+
+            // Validate Branch
+            if (branch.value === "") {
+                showError(branch, "Please select your branch.", "branch-error");
+                isValid = false;
+            }
+
+            // Validate Semester
+            if (semester.value === "") {
+                showError(semester, "Please select your semester.", "semester-error");
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Save the student information in localStorage
+                localStorage.setItem('studentId', studentId.value);
+                localStorage.setItem('studentName', studentName.value);
+                localStorage.setItem('branch', branch.value);
+                localStorage.setItem('semester', semester.value);
+
+                // Redirect to index.html after successful login
+                window.location.href = 'ind.html';
+            }
+
+            // Prevent the form from submitting normally if there are errors
+            return false;
+        }
+
+        // Function to show error message and highlight the invalid input
+        function showError(input, message, errorElementId) {
+            input.classList.add('error'); // Add red border to the invalid input
+            const errorElement = document.getElementById(errorElementId); // Get the error message element
+            errorElement.innerText = message; // Set the error message
+            errorElement.style.display = 'block'; // Make the error message visible
+        }
+
+        // Function to clear previous errors
+        function clearErrors(inputs) {
+            inputs.forEach(input => {
+                input.classList.remove('error'); // Remove red border
+                const errorElement = document.getElementById(input.id + '-error'); // Get the corresponding error message element
+                errorElement.style.display = 'none'; // Hide the error message
+                errorElement.innerText = ''; // Clear any previous error message
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Header styles */
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Title styling */
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+/* Navigation styles */
+nav {
+    margin-top: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 12px 20px;
+    margin: 0 10px;
+    display: inline-block;
+    background-color: #fff;
+    color: #4CAF50;
+    border-radius: 25px;
+    transition: background-color 0.3s, color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav a:hover {
+    background-color: #45a049;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    nav a {
+        font-size: 1rem;
+        padding: 10px 16px;
+    }
+}

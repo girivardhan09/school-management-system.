@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Feedback</title>
+    <link rel="stylesheet" href="fedstyle.css">
+</head>
+<body>
+    <header>
+        <h1>Submit Feedback</h1>
+    </header>
+    <section>
+        <form id="feedback-form">
+            <label for="course">Course:</label>
+            <select id="course" onchange="populateTeachers()">
+                <option value="">-- Select a course --</option>
+            </select>
+
+            <label for="teacher">Teacher:</label>
+            <select id="teacher">
+                <option value="">-- Select a teacher --</option>
+            </select>
+
+            <label for="feedback">Feedback:</label>
+            <textarea id="feedback" required placeholder="Enter your feedback here..."></textarea>
+
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </section>
+    <script src="feedback.js"></script>
+</body>
+</html>
